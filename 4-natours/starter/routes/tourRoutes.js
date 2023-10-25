@@ -1,9 +1,11 @@
 const express = require('express');
 const tours = require('../controllers/tourController');
 const auth = require('../controllers/authController');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
+router.use('/:tourId/reviews', reviewRouter);
 // router.param('id', tours.checkID);
 router.route('/top-5-cheap').get(tours.aliasTopTours, tours.getAll);
 router.route('/monthly-plan/:year').get(tours.getMonthlyPlan);

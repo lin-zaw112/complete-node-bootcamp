@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: [true, 'A user must have a name.'],
+    required: [true, 'A user must have a name.'],
     trim: true,
     unique: true,
     maxlength: [20, 'A Username must have less or equal then 20 characters'],
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    require: [true, 'A user must have a name.'],
+    required: [true, 'A user must have a name.'],
     trim: true,
     lowercase: true,
     validate: [
@@ -30,13 +30,13 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    require: [true, 'A user must set a secure password'],
+    required: [true, 'A user must set a secure password'],
     minlength: 8,
     select: false,
   },
   passwordComfirm: {
     type: String,
-    require: [true, 'A user must set a secure password '],
+    required: [true, 'A user must set a secure password '],
     minlength: 8,
     validate: {
       // This only works on CREATE AND SAVE !!
@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
     },
   },
   photo: String,
-  passwordChangedAt: Date,
+  passwordChangedAt: { type: Date, select: false },
   passwordResetToken: String,
   passwordResetExpires: Date,
   active: {

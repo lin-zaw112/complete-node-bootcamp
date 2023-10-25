@@ -1,6 +1,6 @@
 const Tour = require('../models/tourModel');
-const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = '5';
@@ -9,56 +9,16 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAll = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+exports.getAll = factory.getAll(Tour);
 
-  const tours = await features.query;
+exports.get = factory.getOne(Tour, { path: 'reviews' });
 
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: tours.length,
-    data: { tours },
-  });
-});
-exports.get = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
-  res.status(200).json({
-    status: 'success',
-    data: { tour },
-  });
-});
-exports.create = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
+exports.create = factory.createOne(Tour);
 
-  res.status(201).json({
-    status: 'success',
-    data: { tour: newTour },
-  });
-});
-exports.update = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
-exports.delete = catchAsync(async (req, res, next) => {
-  await Tour.findByIdAndDelete(req.params.id);
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+exports.update = factory.updateOne(Tour);
+
+exports.delete = factory.deleteOne(Tour);
+
 exports.getTourStarts = catchAsync(async (req, res, next) => {
   const starts = await Tour.aggregate([
     { $match: { ratingsAverage: { $gte: 4.5 } } },
